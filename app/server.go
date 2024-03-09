@@ -110,6 +110,11 @@ func (server *Server) initCommands(config AppConfig, dbConfig DBConfig) {
 			},
 		},
 	}
+
+	err := cmdApp.Run(os.Args)
+	if err!= nil {
+        log.Fatal(err)
+    }
 }
 
 func Run() {

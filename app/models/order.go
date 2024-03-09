@@ -21,9 +21,9 @@ type Order struct {
 	PaymentToken        string          `gorm:"size:100;index"`
 	BaseTotalPrice      decimal.Decimal `gorm:"type:decimal(16,2)"`
 	TaxAmount           decimal.Decimal `gorm:"type:decimal(16,2)"`
-	TaxPercent          decimal.Decimal `gorm:"type:decimal(16,2)"`
+	TaxPercent          decimal.Decimal `gorm:"type:decimal(10,2)"`
 	DiscountAmount      decimal.Decimal `gorm:"type:decimal(16,2)"`
-	DiscountPercent     decimal.Decimal `gorm:"type:decimal(16,2)"`
+	DiscountPercent     decimal.Decimal `gorm:"type:decimal(10,2)"`
 	ShippingCost        decimal.Decimal `gorm:"type:decimal(16,2)"`
 	GrandTotal          decimal.Decimal `gorm:"type:decimal(16,2)"`
 	Note                string          `gorm:"type:text`

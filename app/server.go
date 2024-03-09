@@ -8,27 +8,29 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type Server struct {
-	DB *gorm.DB
+	DB     *gorm.DB
 	Router *mux.Router
 }
 
 type AppConfig struct {
 	AppName string
-	AppEnv string
+	AppEnv  string
 	AppPort string
 }
 
 type DBConfig struct {
-	DBHost string
-	DBUser string
+	DBHost     string
+	DBUser     string
 	DBPassword string
-	DBName string
-	DBPort string
+	DBName     string
+	DBPort     string
+	DBDriver   string
 }
 
 func (server *Server) Initialize(appconfig AppConfig, dbConfig DBConfig) {
@@ -36,13 +38,19 @@ func (server *Server) Initialize(appconfig AppConfig, dbConfig DBConfig) {
 
 	var err error
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", dbConfig.DBHost, dbConfig.DBUser, dbConfig.DBPassword, dbConfig.DBName, dbConfig.DBPort)
+	if dbConfig.DBDriver == "mysql" {
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbConfig.DBUser, dbConfig.DBPassword, dbConfig.DBHost, dbConfig.DBPort, dbConfig.DBName)
 
-	server.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		server.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	} else {
+		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", dbConfig.DBHost, dbConfig.DBUser, dbConfig.DBPassword, dbConfig.DBName, dbConfig.DBPort)
 
-	if err!= nil {
-        panic("Failed on connecting to the database server")
-    }
+		server.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	}
+
+	if err != nil {
+		panic("Failed on connecting to the database server")
+	}
 
 	server.Router = mux.NewRouter()
 	server.initializeRoutes()
@@ -65,7 +73,7 @@ func Run() {
 	var server = Server{}
 	var appConfig = AppConfig{}
 	var dbConfig = DBConfig{}
-	
+
 	err := godotenv.Load()
 
 	if err != nil {
@@ -81,6 +89,7 @@ func Run() {
 	dbConfig.DBPassword = getEnv("DB_PASSWORD", "password")
 	dbConfig.DBName = getEnv("DB_NAME", "dbname")
 	dbConfig.DBPort = getEnv("DB_PORT", "5432")
+	dbConfig.DBDriver = getEnv("DB_Driver", "postgres")
 
 	server.Initialize(appConfig, dbConfig)
 	server.Run(":" + appConfig.AppPort)

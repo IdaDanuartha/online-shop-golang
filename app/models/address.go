@@ -5,7 +5,9 @@ import (
 )
 
 type Address struct {
-	ID         string `gorm:"size:36,not null;uniqueIndex;primaryKey"`
+	ID         string `gorm:"size:36;not null;uniqueIndex;primaryKey"`
+	User       User
+	UserID     string `gorm:"size:36;index"`
 	Name       string `gorm:"size:100"`
 	IsPrimary  bool
 	CityID     string `gorm:"size:100"`

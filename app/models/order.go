@@ -18,7 +18,7 @@ type Order struct {
 	OrderDate           time.Time
 	PaymentDue          time.Time
 	PaymentStatus       string          `gorm:"size:50;index"`
-	PaymentToken        string          `gorm:"size:100;index""`
+	PaymentToken        string          `gorm:"size:100;index"`
 	BaseTotalPrice      decimal.Decimal `gorm:"type:decimal(16,2)"`
 	TaxAmount           decimal.Decimal `gorm:"type:decimal(16,2)"`
 	TaxPercent          decimal.Decimal `gorm:"type:decimal(10,2)"`

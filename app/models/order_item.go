@@ -10,7 +10,7 @@ type OrderItem struct {
 	ID              string `gorm:"size:36;not null;uniqueIndex;primary_key"`
 	Order           Order
 	OrderID         string `gorm:"size:36;index"`
-	Product         []Product
+	Product         Product
 	ProductID       string `gorm:"size:36;index"`
 	Qty             int
 	BasePrice       decimal.Decimal `gorm:"type:decimal(16,2)"`

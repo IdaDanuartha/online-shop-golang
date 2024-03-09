@@ -36,6 +36,24 @@ type DBConfig struct {
 func (server *Server) Initialize(appconfig AppConfig, dbConfig DBConfig) {
 	fmt.Println("Welcome to", appconfig.AppName)
 
+	server.initializeDB(dbConfig)
+	server.initializeRoutes()
+}
+
+func (server *Server) Run(addr string) {
+	fmt.Printf("Listening on port %s", addr)
+	log.Fatal(http.ListenAndServe(addr, server.Router))
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+
+	return fallback
+}
+
+func (server *Server) initializeDB(dbConfig DBConfig) {
 	var err error
 
 	if dbConfig.DBDriver == "mysql" {
@@ -51,22 +69,6 @@ func (server *Server) Initialize(appconfig AppConfig, dbConfig DBConfig) {
 	if err != nil {
 		panic("Failed on connecting to the database server")
 	}
-
-	server.Router = mux.NewRouter()
-	server.initializeRoutes()
-}
-
-func (server *Server) Run(addr string) {
-	fmt.Printf("Listening on port %s", addr)
-	log.Fatal(http.ListenAndServe(addr, server.Router))
-}
-
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-
-	return fallback
 }
 
 func Run() {

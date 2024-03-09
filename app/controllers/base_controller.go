@@ -87,7 +87,7 @@ func (server *Server) initializeDB(dbConfig DBConfig) {
 		server.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	}
 
-	if err != nil {
+	if err != nil { 
 		panic("Failed on connecting to the database server")
 	}
 }

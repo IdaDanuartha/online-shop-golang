@@ -50,12 +50,12 @@ func (p *Product) GetProducts(db *gorm.DB, perPage int, page int) (*[]Product, i
 
 func (p *Product) FindBySlug(db *gorm.DB, slug string) (*Product, error) {
 	var err error
-    var product Product
+	var product Product
 
-    err = db.Debug().Model(&Product{}).Where("slug = ?", slug).First(&product).Error
-    if err!= nil {
-        return nil, err
-    }
+	err = db.Debug().Preload("ProductImages").Model(&Product{}).Where("slug = ?", slug).First(&product).Error
+	if err != nil {
+		return nil, err
+	}
 
-    return &product, nil
+	return &product, nil
 }
